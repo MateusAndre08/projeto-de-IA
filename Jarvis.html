@@ -1,0 +1,763 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jarvis AI</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #101114;
+    --panel: #191a1f;
+    --input: #202127;
+    --border: #34353d;
+    --red: #e64b4b;
+    --red-light: #ff7373;
+    --text: #f5f5f5;
+    --muted: #999;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+.app {
+    width: 100%;
+    max-width: 1600px;
+    height: 100vh;
+    min-height: 600px;
+    margin: auto;
+    padding: 22px 30px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 20px 28px;
+}
+
+/* CABEÇALHO */
+
+header {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 0 0 18px;
+    border-bottom: 1px solid #303139;
+}
+
+.logo {
+    color: var(--red);
+    font-size: 34px;
+    font-weight: bold;
+    letter-spacing: 3px;
+}
+
+header p {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 8px 0 0;
+}
+
+.status {
+    color: #bdbdbd;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: #e64b4b;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* CHAT */
+
+.chat-panel {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-heading {
+    margin: 0 0 14px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.chat {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 5px 12px 10px 0;
+    scrollbar-width: thin;
+    scrollbar-color: #444 transparent;
+}
+
+.message {
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+    animation: appear 0.2s ease;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user {
+    background: #292a30;
+    margin-left: 12%;
+}
+
+.bot {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    margin-right: 4%;
+}
+
+.label {
+    font-size: 12px;
+    color: #f16a6a;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.bot h3 {
+    color: var(--red-light);
+    margin-top: 24px;
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.bot h3:first-child {
+    margin-top: 0;
+}
+
+.bot p {
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+.bot li {
+    margin-bottom: 8px;
+}
+
+/* CAMPO DE MENSAGEM */
+
+.input-area {
+    display: flex;
+    gap: 10px;
+    padding-top: 14px;
+    border-top: 1px solid #303139;
+    background: var(--bg);
+}
+
+.input-area input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    background: var(--input);
+    border: 1px solid #383941;
+    border-radius: 10px;
+    padding: 14px;
+    color: white;
+    font-size: 15px;
+    outline: none;
+}
+
+.input-area input:focus,
+.quiz input:focus {
+    border-color: var(--red);
+}
+
+button {
+    background: #d94343;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    padding: 12px 17px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+button:hover {
+    background: #b83232;
+}
+
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--red-light);
+    outline-offset: 2px;
+}
+
+.send {
+    flex-shrink: 0;
+}
+
+/* BARRA LATERAL */
+
+.sidebar {
+    min-height: 0;
+    overflow-y: auto;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.sidebar h2 {
+    font-size: 20px;
+    margin: 0;
+}
+
+.sidebar-description {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background: #34353d;
+    border: none;
+    width: 100%;
+    margin: 2px 0;
+}
+
+.examples {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.examples button {
+    background: #202127;
+    border: 1px solid #383941;
+    color: #eee;
+    padding: 14px;
+    text-align: left;
+    line-height: 1.5;
+    border-radius: 10px;
+}
+
+.examples button:hover {
+    background: #303139;
+    border-color: var(--red);
+}
+
+.example-number {
+    display: block;
+    color: var(--red-light);
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.tip {
+    margin-top: auto;
+    padding: 14px;
+    border-radius: 10px;
+    background: #202127;
+    border: 1px solid #303139;
+    color: #aaa;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.tip strong {
+    color: #ff7373;
+}
+
+/* QUESTIONÁRIO */
+
+.quiz {
+    margin-top: 18px;
+}
+
+.quiz input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 12px;
+    background: var(--input);
+    border: 1px solid #383941;
+    border-radius: 8px;
+    padding: 12px;
+    color: white;
+    font-size: 14px;
+}
+
+.quiz button {
+    width: 100%;
+}
+
+.quiz-result {
+    margin-top: 16px;
+    padding: 14px;
+    background: #202127;
+    border-radius: 10px;
+    overflow-wrap: anywhere;
+}
+
+/* RODAPÉ */
+
+.footer {
+    color: #777;
+    font-size: 11px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+/* NOTEBOOKS MENORES E TABLETS */
+
+@media (max-width: 950px) {
+    .app {
+        grid-template-columns: minmax(0, 1fr) 270px;
+        padding: 18px;
+        gap: 16px;
+    }
+
+    .sidebar {
+        padding: 16px;
+    }
+
+    .logo {
+        font-size: 29px;
+    }
+
+    header p {
+        font-size: 12px;
+    }
+}
+
+/* CELULARES */
+
+@media (max-width: 700px) {
+    .app {
+        height: auto;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: 14px;
+        gap: 16px;
+    }
+
+    header {
+        flex-direction: column;
+        text-align: center;
+        padding-bottom: 16px;
+    }
+
+    .logo {
+        font-size: 30px;
+    }
+
+    .chat-panel {
+        min-height: 400px;
+    }
+
+    .chat {
+        overflow: visible;
+        min-height: 250px;
+        max-height: none;
+    }
+
+    .user {
+        margin-left: 4%;
+    }
+
+    .bot {
+        margin-right: 0;
+    }
+
+    .sidebar {
+        order: 2;
+        overflow: visible;
+    }
+
+    .chat-panel {
+        order: 1;
+    }
+
+    .input-area {
+        order: 3;
+        position: sticky;
+        bottom: 0;
+        padding: 12px 0;
+        z-index: 5;
+    }
+
+    .footer {
+        order: 4;
+    }
+
+    .message {
+        padding: 15px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header>
+    <div>
+        <div class="logo">JARVIS AI</div>
+        <p>Inteligência artificial • Conhecimento • Aprendizado</p>
+    </div>
+
+    <div class="status">
+        <span class="status-dot"></span>
+        DEMONSTRAÇÃO EDUCATIVA
+    </div>
+</header>
+
+<section class="chat-panel">
+    <h2 class="chat-heading">Conversa</h2>
+
+    <main class="chat" id="chat" aria-live="polite">
+        <div class="message bot">
+            <div class="label">JARVIS</div>
+            Olá! Sou o Jarvis. Escolha um dos prompts ao lado
+            ou digite sua mensagem para descobrir como a maneira
+            de perguntar pode influenciar uma resposta de inteligência artificial.
+            <p>Vamos começar?</p>
+        </div>
+    </main>
+
+    <form id="form" class="input-area">
+        <input id="prompt"
+            type="text"
+            placeholder="Digite seu prompt..."
+            autocomplete="off"
+            aria-label="Digite seu prompt"
+            required>
+
+        <button class="send" type="submit">Enviar</button>
+    </form>
+</section>
+
+<aside class="sidebar">
+    <h2>Explore o Jarvis</h2>
+
+    <p class="sidebar-description">
+        Escolha uma demonstração e veja como instruções diferentes
+        podem mudar a resposta.
+    </p>
+
+    <hr class="sidebar-divider">
+
+    <div class="examples">
+        <button type="button" onclick="usarPrompt(1)">
+            <span class="example-number">PROMPT 01</span>
+            Faça meu trabalho
+        </button>
+
+        <button type="button" onclick="usarPrompt(2)">
+            <span class="example-number">PROMPT 02</span>
+            Explique o tema, apresente exemplos e faça perguntas
+            para testar se eu realmente entendi.
+        </button>
+
+        <button type="button" onclick="usarPrompt(3)">
+            <span class="example-number">PROMPT 03</span>
+            Como criar um prompt melhor?
+        </button>
+    </div>
+
+    <div class="tip">
+        <strong>Dica:</strong> um bom prompt explica o tema,
+        o tipo de resposta desejada, os exemplos necessários
+        e a atividade que ajudará a testar o aprendizado.
+    </div>
+
+    <div class="footer">
+        Jarvis AI • Projeto demonstrativo
+        <br>
+        As respostas são programadas neste arquivo.
+    </div>
+</aside>
+
+</div>
+
+<script>
+const form = document.getElementById("form");
+const input = document.getElementById("prompt");
+const chat = document.getElementById("chat");
+
+function normalizar(texto) {
+    return texto.normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim()
+        .replace(/[.!?]+$/g, "")
+        .replace(/\s+/g, " ");
+}
+
+function usarPrompt(tipo) {
+    const prompts = {
+        1: "Faça meu trabalho",
+        2: "Explique o tema, apresente exemplos e faça perguntas para testar se eu realmente entendi",
+        3: "Como criar um prompt melhor?"
+    };
+
+    input.value = prompts[tipo];
+    input.focus();
+}
+
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const pergunta = input.value.trim();
+
+    if (!pergunta) return;
+
+    adicionarMensagem("VOCÊ", pergunta, "user");
+
+    const texto = normalizar(pergunta);
+
+    if (texto === normalizar("Faça meu trabalho")) {
+        respostaSimples();
+    } else if (
+        texto === normalizar(
+            "Explique o tema, apresente exemplos e faça perguntas para testar se eu realmente entendi"
+        )
+    ) {
+        respostaCompleta();
+    } else if (
+        texto === normalizar("Como criar um prompt melhor?")
+    ) {
+        respostaPromptMelhor();
+    } else {
+        adicionarMensagem(
+            "JARVIS",
+            "Esta demonstração possui três respostas programadas. Escolha um dos três prompts sugeridos para continuar.",
+            "bot"
+        );
+    }
+
+    input.value = "";
+});
+
+function adicionarMensagem(nome, conteudo, tipo) {
+    const mensagem = document.createElement("div");
+    mensagem.className = "message " + tipo;
+
+    const etiqueta = document.createElement("div");
+    etiqueta.className = "label";
+    etiqueta.textContent = nome;
+
+    const corpo = document.createElement("div");
+
+    if (conteudo instanceof HTMLElement) {
+        corpo.appendChild(conteudo);
+    } else {
+        corpo.textContent = conteudo;
+    }
+
+    mensagem.appendChild(etiqueta);
+    mensagem.appendChild(corpo);
+    chat.appendChild(mensagem);
+
+    mensagem.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+}
+
+function respostaSimples() {
+    adicionarMensagem(
+        "JARVIS",
+        "A Inteligência Artificial é importante no cotidiano porque facilita tarefas, economiza tempo e ajuda as pessoas a estudar, trabalhar e se comunicar. Ela está presente em celulares, redes sociais, aplicativos e muitos outros recursos que usamos diariamente.",
+        "bot"
+    );
+}
+
+function respostaCompleta() {
+    const c = document.createElement("div");
+
+    c.innerHTML = `
+    <h3>1. O que é Inteligência Artificial?</h3>
+
+    <p>A Inteligência Artificial (IA) é uma tecnologia que permite aos computadores realizar tarefas que normalmente exigem habilidades humanas, como compreender textos, reconhecer imagens, identificar padrões e auxiliar na resolução de problemas.</p>
+
+    <h3>2. Qual é sua importância no cotidiano?</h3>
+
+    <p>A IA pode tornar atividades mais rápidas e práticas. Ela ajuda a encontrar informações, personaliza serviços e auxilia nos estudos e no trabalho. Entretanto, também pode cometer erros, por isso precisamos conferir suas respostas.</p>
+
+    <h3>3. Exemplos do dia a dia</h3>
+
+    <ul>
+      <li><b>Celulares:</b> reconhecimento facial e correção automática de palavras.</li>
+      <li><b>Redes sociais:</b> recomendação de vídeos e publicações.</li>
+      <li><b>Mapas:</b> sugestões de trajetos e estimativas de trânsito.</li>
+      <li><b>Educação:</b> explicações, exercícios e revisão de textos.</li>
+      <li><b>Medicina:</b> auxílio na análise de exames por profissionais.</li>
+      <li><b>Comércio:</b> recomendações de produtos e atendimento automático.</li>
+      <li><b>Jogos:</b> personagens controlados pelo computador que reagem às ações do jogador.</li>
+      <li><b>Trabalho:</b> organização de informações e automatização de tarefas.</li>
+    </ul>
+
+    <h3>4. Quais cuidados devemos ter?</h3>
+
+    <p>A IA pode apresentar informações incorretas e trazer riscos à privacidade. Devemos verificar fontes confiáveis, proteger nossos dados e usar a tecnologia como auxílio, sem deixar de desenvolver nossas próprias habilidades.</p>
+
+    <h3>5. Teste seus conhecimentos</h3>
+
+    <p>Responda às cinco perguntas sem consultar o texto. Depois, compare suas respostas com as sugestões.</p>
+
+    <div class="quiz">
+      <p><b>1.</b> O que é Inteligência Artificial?</p>
+      <input id="q1" placeholder="Sua resposta" aria-label="Resposta da pergunta 1">
+
+      <p><b>2.</b> Cite dois exemplos de IA no cotidiano.</p>
+      <input id="q2" placeholder="Sua resposta" aria-label="Resposta da pergunta 2">
+
+      <p><b>3.</b> Como a IA pode ajudar um estudante?</p>
+      <input id="q3" placeholder="Sua resposta" aria-label="Resposta da pergunta 3">
+
+      <p><b>4.</b> Por que devemos verificar as respostas da IA?</p>
+      <input id="q4" placeholder="Sua resposta" aria-label="Resposta da pergunta 4">
+
+      <p><b>5.</b> Como usar a IA sem prejudicar o próprio aprendizado?</p>
+      <input id="q5" placeholder="Sua resposta" aria-label="Resposta da pergunta 5">
+
+      <button type="button" id="corrigir">Conferir respostas</button>
+
+      <div id="resultado" class="quiz-result" aria-live="polite"></div>
+    </div>`;
+
+    adicionarMensagem("JARVIS", c, "bot");
+
+    c.querySelector("#corrigir").addEventListener("click", function() {
+        const gabarito = [
+            "É uma tecnologia que permite aos computadores executar tarefas como reconhecer padrões, compreender textos e auxiliar na resolução de problemas.",
+            "Exemplos: reconhecimento facial, recomendações de vídeos, mapas e assistentes virtuais.",
+            "Pode explicar conteúdos, criar exercícios, revisar textos e organizar os estudos.",
+            "Porque a IA pode cometer erros ou apresentar informações incorretas.",
+            "Tentando resolver as atividades, conferindo fontes e usando a IA como apoio para aprender."
+        ];
+
+        let preenchidas = 0;
+
+        const resultado = document.createElement("div");
+        const resumo = document.createElement("p");
+
+        for (let i = 1; i <= 5; i++) {
+            const valor = c.querySelector("#q" + i).value.trim();
+
+            if (valor.length >= 5) preenchidas++;
+
+            const p = document.createElement("p");
+            p.textContent = i + ". Resposta sugerida: " + gabarito[i - 1];
+
+            resultado.appendChild(p);
+        }
+
+        resumo.textContent =
+            "Você preencheu " + preenchidas +
+            " de 5 respostas. Compare suas ideias com as respostas sugeridas. O preenchimento, por si só, não garante que estejam corretas.";
+
+        const destino = c.querySelector("#resultado");
+        destino.replaceChildren(resumo, resultado);
+    });
+}
+
+function respostaPromptMelhor() {
+    const c = document.createElement("div");
+
+    c.innerHTML = `
+    <h3>Como criar um prompt melhor?</h3>
+
+    <p>Um prompt é a instrução ou pergunta que você envia para uma Inteligência Artificial. Quando você explica melhor o que deseja, a IA tem mais informações para produzir uma resposta adequada.</p>
+
+    <p>Uma dica simples é incluir quatro coisas:</p>
+
+    <h3>1. Tema</h3>
+
+    <p><b>Sobre o que você quer aprender?</b></p>
+    <p>Informe claramente o assunto que deseja conhecer.</p>
+    <p><i>Exemplo:</i> "Quero aprender sobre Inteligência Artificial."</p>
+
+    <h3>2. Explicação</h3>
+
+    <p><b>Como você quer que a IA explique?</b></p>
+    <p>Peça uma linguagem simples, uma explicação detalhada ou uma resposta organizada por tópicos.</p>
+    <p><i>Exemplo:</i> "Explique de forma simples, como se eu estivesse aprendendo pela primeira vez."</p>
+
+    <h3>3. Exemplos</h3>
+
+    <p><b>Peça exemplos práticos para facilitar o entendimento.</b></p>
+    <p>Os exemplos ajudam a relacionar a teoria com situações reais.</p>
+    <p><i>Exemplo:</i> "Mostre como a IA é usada nos celulares, nas escolas e nos hospitais."</p>
+
+    <h3>4. Prática</h3>
+
+    <p><b>Peça perguntas ou exercícios para testar o que aprendeu.</b></p>
+    <p>Tente responder antes de consultar as respostas sugeridas.</p>
+    <p><i>Exemplo:</i> "Faça cinco perguntas para verificar se realmente entendi o assunto."</p>
+
+    <h3>Veja a diferença!</h3>
+
+    <p><b>Prompt simples:</b><br>
+    "Faça meu trabalho sobre Inteligência Artificial."</p>
+
+    <p><b>Prompt melhorado:</b><br>
+    "Explique a importância da Inteligência Artificial no cotidiano usando linguagem simples e organizada. Apresente exemplos práticos e, no final, faça cinco perguntas para testar se realmente entendi o conteúdo."</p>
+
+    <h3>Modelo pronto para usar</h3>
+
+    <p>"Quero aprender sobre [TEMA]. Explique de forma [TIPO DE EXPLICAÇÃO]. Apresente [EXEMPLOS] e, no final, crie [PERGUNTAS OU EXERCÍCIOS] para testar meu conhecimento."</p>
+
+    <h3>Por que isso é importante?</h3>
+
+    <p>Um prompt bem elaborado deixa seu objetivo mais claro, ajudando a IA a produzir uma resposta mais útil. Mesmo assim, é importante conferir as informações e desenvolver seu próprio raciocínio.</p>
+    `;
+
+    adicionarMensagem("JARVIS", c, "bot");
+}
+</script>
+
+</body>
+</html>
