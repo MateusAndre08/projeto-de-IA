@@ -1,6 +1,6 @@
 body
 {
-    background-color: lightgray;
+    background-color: #F5F0E8;
 }
 h1 {
     font-size: clamp(30px, 4vw, 60px);
@@ -9,10 +9,12 @@ h1 {
 }
 h2 {
     text-align: center;
+    color: black
 }
 p{
     font-size: 20px;
     font-family: "Times New Roman", serif;
+    color: #7B0000
 }
 
 .slogan{
@@ -26,7 +28,7 @@ p{
     padding: 20px;
 }
 .tema{
-    color: gray;
+    color: #F5F0E8;
     font-size: 35px;
 }
 .quadrado {
@@ -79,4 +81,21 @@ p{
     padding: 20px;
     background-color: lightgray;
     text-align: left;
+}
+button{
+  margin-top: 50px;
+  margin-left: 600px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 50px;
+  background-color: lightcoral ;
+  color: hwb(0 7% 64%);
+  border: 20pxpx solid black;
+  border-radius: 70%
+}
+a{
+  font-size: 30px;
+  color: #C5A15B;
 }
