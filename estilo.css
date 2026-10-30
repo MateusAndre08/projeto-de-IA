@@ -97,8 +97,6 @@ p{
 .textos{
     flex: 1;
     padding: 20px;
-    background-color: lightgray;
-    text-align: left;
 }
 button{
   margin-top: 50px;
@@ -117,3 +115,25 @@ a{
   font-size: 30px;
   color: #C5A15B;
 }
+.imagem{
+    display: block;
+    width: 500px;
+    max-width: 90%;
+    height: auto;
+    margin: 30px auto;
+}
+.conteudo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+}
+.imagem-dado {
+    display: block;
+    width: 900px;
+    max-width: 90%;
+    height: auto;
+    margin: 0 auto;
+}
+
