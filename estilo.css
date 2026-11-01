@@ -16,7 +16,11 @@ p{
     font-family: "Times New Roman", serif;
     color: black
 }
-
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+}
 .slogan{
     color: gray;
     font-size: 45px;
