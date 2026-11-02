@@ -6,7 +6,7 @@ h1 {
     font-size: clamp(30px, 4vw, 60px);
     color: maroon;
     font-family: "Merriweather", serif;
-    width: 650px
+    width: 650px;
 }
 h2 {
     text-align: center;
